@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Playlist Downloader</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-900 min-h-screen flex items-center justify-center">
+
+    <div class="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md transform transition-all duration-500 ease-in-out hover:scale-105 hover:shadow-2xl animate-bounce-in">
+        <h1 class="text-3xl font-bold text-center mb-6 text-indigo-400 animate-pulse-in">
+            Download YouTube Playlist
+        </h1>
+        <form id="downloadForm" class="space-y-6">
+            <div class="relative group">
+                <label for="playlist_url" class="block text-sm font-medium text-gray-400 transition duration-500 ease-in-out transform group-hover:text-indigo-500" aria-placeholder="URL">Playlist URL:</label>
+                <input type="text" id="playlist_url" name="playlist_url" required
+                    class="mt-1 block w-full px-4 py-3 bg-gray-700 text-gray-200 border border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300 ease-in-out transform hover:scale-110 group-hover:bg-gray-600 group-hover:ring-2 group-hover:ring-indigo-500">
+            </div>
+
+            <div class="text-center">
+                <input type="submit" value="Download Playlist"
+                    class="px-8 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-lg transition-all duration-300 ease-in-out transform hover:scale-110 hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 hover:shadow-2xl hover:ring-4 hover:ring-offset-indigo-500">
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('downloadForm').onsubmit = async function (e) {
+            e.preventDefault(); // Prevent default form submission
+
+            const formData = new FormData(this);
+            const response = await fetch('/download/', {  // Updated to point to the FastAPI endpoint
+                method: 'POST',
+                body: formData
+            });
+
+            try {
+                const result = await response.json();
+                if (response.ok) {
+                    alert(result.message);
+                } else {
+                    alert(`Error: ${result.detail}`);
+                }
+            } catch (error) {
+                alert('Failed to parse response. Please check the server.');
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Animations */
+
+        @keyframes pulse-in {
+            0% {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes bounce-in {
+            0%, 100% {
+                transform: scale(1);
+                animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+            }
+            50% {
+                transform: scale(1.05);
+                animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+            }
+        }
+
+        .animate-pulse-in {
+            animation: pulse-in 0.8s ease-in-out;
+        }
+
+        .animate-bounce-in {
+            animation: bounce-in 1s ease-in-out;
+        }
+    </style>
+
+</body>
+
+</html>
